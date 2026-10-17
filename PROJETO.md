@@ -145,6 +145,11 @@ lib/
 
 Recuperar senha, kg por série (hoje é só o máximo do dia). Entram quando forem pedidos.
 
+## Produção
+
+- Site: https://treinaotop.vercel.app (Vercel, deploy automático a cada push no `main`)
+- Banco: Supabase, projeto `treinaotop` (`sa-east-1`). `DATABASE_URL` configurada como variável sensível na Vercel (produção e preview).
+
 ## Rodando
 
 Crie `.env.local` com a string de conexão do Postgres (pooler do Supabase, porta 6543):
