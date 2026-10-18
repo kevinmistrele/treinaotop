@@ -20,6 +20,8 @@ export type Exercise = {
   name: string;
   sets: number;
   reps: number;
+  /** Opcional: não conta pro progresso nem pra fechar o treino do dia. */
+  optional: boolean;
   last_kg: number | null;
   last_date: string | null;
   /** Registro de hoje: existir = exercício concluído (check). */
@@ -40,7 +42,7 @@ export const todayWeekday = () => new Date(`${today()}T00:00Z`).getUTCDay();
 export async function getExercises(userId: number, weekday?: number): Promise<Exercise[]> {
   const t = today();
   const rows = await sql<Exercise[]>`
-    SELECT e.id, e.weekday, e.name, e.sets, e.reps,
+    SELECT e.id, e.weekday, e.name, e.sets, e.reps, e.optional,
       (SELECT kg FROM logs WHERE exercise_id = e.id AND date < ${t} ORDER BY date DESC LIMIT 1) AS last_kg,
       (SELECT date FROM logs WHERE exercise_id = e.id AND date < ${t} ORDER BY date DESC LIMIT 1) AS last_date,
       l.kg AS today_kg, l.sets AS today_sets, l.reps AS today_reps

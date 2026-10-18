@@ -80,8 +80,8 @@ export async function addExercise(f: FormData): Promise<FormState> {
   if (!name || weekday === null || sets === null || reps === null)
     return { error: "Preencha nome, séries e repetições." };
   await sql`
-    INSERT INTO exercises (user_id, weekday, name, sets, reps, position)
-    VALUES (${user.id}, ${weekday}, ${name}, ${sets}, ${reps},
+    INSERT INTO exercises (user_id, weekday, name, sets, reps, optional, position)
+    VALUES (${user.id}, ${weekday}, ${name}, ${sets}, ${reps}, ${f.has("optional")},
       (SELECT COALESCE(MAX(position), 0) + 1 FROM exercises WHERE user_id = ${user.id} AND weekday = ${weekday}))`;
   refresh();
 }
@@ -92,7 +92,7 @@ export async function updateExercise(id: number, f: FormData): Promise<FormState
   const sets = num(f.get("sets"), 1, 100, true);
   const reps = num(f.get("reps"), 1, 1000, true);
   if (!name || sets === null || reps === null) return { error: "Preencha nome, séries e repetições." };
-  await sql`UPDATE exercises SET name = ${name}, sets = ${sets}, reps = ${reps} WHERE id = ${id} AND user_id = ${user.id}`;
+  await sql`UPDATE exercises SET name = ${name}, sets = ${sets}, reps = ${reps}, optional = ${f.has("optional")} WHERE id = ${id} AND user_id = ${user.id}`;
   refresh();
 }
 

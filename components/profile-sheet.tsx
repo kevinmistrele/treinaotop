@@ -1,4 +1,4 @@
-import { FiLogOut, FiUser } from "react-icons/fi";
+import { FiDownload, FiLogOut, FiUser } from "react-icons/fi";
 import { logout, updateProfile } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { User } from "@/lib/db";
+import { today, type User } from "@/lib/db";
 
 export function ProfileSheet({ user }: { user: User }) {
   const bmi = user.weight_kg && user.height_cm ? user.weight_kg / (user.height_cm / 100) ** 2 : null;
@@ -66,6 +66,24 @@ export function ProfileSheet({ user }: { user: User }) {
             </p>
           )}
           <Button type="submit">Salvar</Button>
+        </form>
+        {/* ponytail: date nativo já abre o calendário do sistema; GET direto na rota baixa o CSV sem JS */}
+        <form action="/exportar" method="get" className="grid gap-3 border-t px-4 pt-4">
+          <p className="text-sm font-medium">Exportar treinos (CSV)</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-1.5">
+              <Label htmlFor="export-from">De</Label>
+              <Input id="export-from" name="de" type="date" max={today()} />
+            </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="export-to">Até</Label>
+              <Input id="export-to" name="ate" type="date" max={today()} defaultValue={today()} />
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">Sem data inicial, exporta desde o primeiro treino.</p>
+          <Button type="submit" variant="outline">
+            <FiDownload /> Exportar
+          </Button>
         </form>
         <SheetFooter>
           <form action={logout}>

@@ -30,7 +30,7 @@ Registro de treinos semanal: cada dia da semana tem seus exercícios (séries ×
 ```sql
 users     (id, email UNIQUE, password_hash, name, weight_kg, height_cm, created_at)
 sessions  (token PK, user_id → users, expires_at)
-exercises (id, user_id → users, weekday 0-6, name, sets, reps, position)
+exercises (id, user_id → users, weekday 0-6, name, sets, reps, optional, position)
 logs      (id, exercise_id → exercises ON DELETE CASCADE, date 'YYYY-MM-DD', kg, sets, reps,
            UNIQUE(exercise_id, date))
 ```

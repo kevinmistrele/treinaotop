@@ -30,6 +30,7 @@ test("kg da última vez, de hoje e ordem do plano", { skip: !enabled && "sem DAT
   assert.equal(supino.last_kg, 60);
   assert.equal(supino.last_date, "2000-01-08");
   assert.equal(supino.today_kg, 62.5);
+  assert.equal(supino.optional, false); // padrão da coluna
   assert.equal(list[0].today_kg, null);
   assert.deepEqual(await getExercises(uid, 2), []);
 });

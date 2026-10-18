@@ -4,6 +4,7 @@ import { startTransition, useState } from "react";
 import { FiArrowDown, FiArrowUp, FiEdit2, FiMoreVertical, FiPlus, FiTrash2 } from "react-icons/fi";
 import { toast } from "sonner";
 import { addExercise, deleteExercise, moveExercise, updateExercise } from "@/app/actions";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -90,6 +91,7 @@ function ExerciseRow({ ex, index, count }: { ex: Exercise; index: number; count:
           <Input name="name" defaultValue={ex.name} required className="col-span-2 sm:flex-1" aria-label="Nome" />
           <Input name="sets" type="number" min={1} defaultValue={ex.sets} required className="sm:w-20" aria-label="Séries" />
           <Input name="reps" type="number" min={1} defaultValue={ex.reps} required className="sm:w-20" aria-label="Repetições" />
+          <OptionalCheckbox defaultChecked={ex.optional} />
           <Button type="submit">Salvar</Button>
           <Button type="button" variant="ghost" onClick={() => setEditing(false)}>
             Cancelar
@@ -110,6 +112,7 @@ function ExerciseRow({ ex, index, count }: { ex: Exercise; index: number; count:
       <span className="order-1 flex min-w-0 items-center gap-2 font-medium sm:order-none">
         <span className="font-heading text-primary tabular-nums">{index + 1}</span>
         <span className="truncate">{ex.name}</span>
+        {ex.optional && <Badge variant="outline">opcional</Badge>}
       </span>
 
       {/* mobile: uma linha "4×10 · Última 60 kg"; sm+: duas colunas */}
@@ -165,15 +168,25 @@ function AddExercise({ weekday }: { weekday: number }) {
         const r = await addExercise(f);
         if (r?.error) toast.error(r.error);
       }}
-      className="grid grid-cols-[1fr_1fr_auto] gap-2 sm:grid-cols-[1fr_5rem_5rem_auto]"
+      className="grid grid-cols-[1fr_1fr_auto] gap-2 sm:grid-cols-[1fr_auto_5rem_5rem_auto]"
     >
       <input type="hidden" name="weekday" value={weekday} />
       <Input name="name" placeholder="Novo exercício" required className="col-span-3 h-9 sm:col-span-1" aria-label="Nome do exercício" />
+      <OptionalCheckbox className="col-span-3 sm:col-span-1" />
       <Input name="sets" type="number" min={1} placeholder="Séries" required className="h-9" aria-label="Séries" />
       <Input name="reps" type="number" min={1} placeholder="Reps" required className="h-9" aria-label="Repetições" />
       <Button type="submit" size="lg">
         <FiPlus /> Adicionar
       </Button>
     </form>
+  );
+}
+
+function OptionalCheckbox({ className, ...props }: React.ComponentProps<"input">) {
+  return (
+    <label className={`flex items-center gap-2 text-sm text-muted-foreground ${className ?? ""}`}>
+      <input type="checkbox" name="optional" className="size-4 accent-primary" {...props} />
+      Opcional
+    </label>
   );
 }
